@@ -7,7 +7,7 @@ description: "WORKFLOW SKILL — Add new features to the banda asistencias Strea
 
 ## Project Context
 
-**App**: Sistema de gestión de asistencias para banda de música
+**App**: Sistema de gestión de asistencias para Asociación Cultural Musical Cabra del Santo Cristo
 **Tech Stack**: Streamlit + SQLite + Plotly + Pandas
 **Database**: `Database` class in `database.py`
 

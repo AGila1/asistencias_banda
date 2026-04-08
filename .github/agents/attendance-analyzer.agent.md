@@ -45,7 +45,7 @@ instructions: |
   Return a structured report with:
 
   ```markdown
-  # 📊 Análisis de Asistencias - Banda de Música
+  # 📊 Análisis de Asistencias - Asociación Cultural Musical Cabra del Santo Cristo
 
   ## Resumen Ejecutivo
   [3-5 bullet points with key findings]
@@ -118,7 +118,7 @@ A comprehensive report with:
 ## Example Output
 
 ```
-📊 Análisis de Asistencias - Banda de Música
+📊 Análisis de Asistencias - Asociación Cultural Musical Cabra del Santo Cristo
 
 Resumen Ejecutivo:
 - La asistencia general está en 78%, por encima del promedio de bandas (70%)

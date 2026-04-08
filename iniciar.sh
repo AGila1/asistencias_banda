@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "🎺 Sistema de Gestión de Asistencias - Banda de Música"
+echo "🎺 Sistema de Gestión de Asistencias - Asociación Cultural Musical Cabra del Santo Cristo"
 echo "======================================================"
 echo ""
 

@@ -1,5 +1,5 @@
 """
-Aplicación principal de gestión de asistencias de banda de música
+Aplicación principal de gestión de asistencias de Asociación Cultural Musical Cabra del Santo Cristo
 """
 import streamlit as st
 import os
@@ -11,7 +11,7 @@ import plotly.graph_objects as go
 
 # Configuración de la página
 st.set_page_config(
-    page_title="Gestión de Asistencias - Banda de Música",
+    page_title="Gestión de Asistencias - Asociación Cultural Musical Cabra del Santo Cristo",
     page_icon="🎺",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -73,7 +73,7 @@ pagina = st.sidebar.radio(
 
 # ===== PÁGINA DE INICIO =====
 if pagina == "🏠 Inicio":
-    st.markdown('<h1 class="main-header">🎺 Gestión de Asistencias - Banda de Música</h1>', unsafe_allow_html=True)
+    st.markdown('<h1 class="main-header">🎺 Gestión de Asistencias - Asociación Cultural Musical Cabra del Santo Cristo</h1>', unsafe_allow_html=True)
 
     col1, col2, col3 = st.columns(3)
 
@@ -617,4 +617,4 @@ elif pagina == "📊 Estadísticas":
 # Footer
 st.sidebar.divider()
 st.sidebar.caption("🎺 Sistema de Gestión de Asistencias")
-st.sidebar.caption("Banda de Música © 2026")
+st.sidebar.caption("Asociación Cultural Musical Cabra del Santo Cristo © 2026")

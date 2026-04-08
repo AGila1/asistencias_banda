@@ -1,7 +1,7 @@
 [project]
 name = "asistencias-banda"
 version = "1.0.0"
-description = "Sistema de gestión de asistencias para banda de música"
+description = "Sistema de gestión de asistencias para Asociación Cultural Musical Cabra del Santo Cristo"
 readme = "README.md"
 requires-python = ">=3.9,!=3.9.7"
 dependencies = [

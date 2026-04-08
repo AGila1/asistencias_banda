@@ -1,4 +1,4 @@
-# 🎺 Sistema de Gestión de Asistencias - Banda de Música
+# 🎺 Sistema de Gestión de Asistencias - Asociación Cultural Musical Cabra del Santo Cristo
 
 Sistema completo para gestionar asistencias, eventos y pagos de una banda de música.
 
