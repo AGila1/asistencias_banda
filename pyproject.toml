@@ -10,3 +10,6 @@ dependencies = [
     "plotly>=5.17.0",
     "supabase>=2.0.0",
 ]
+
+[tool.poetry]
+package-mode = false
