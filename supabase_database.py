@@ -251,3 +251,52 @@ class SupabaseDatabase:
             'penalizacion': round(penalizacion, 2),
             'total_final': round(total_final, 2)
         }
+
+    def obtener_resumen_pagos(self) -> List[Dict]:
+        """Obtiene el resumen de pagos para todos los miembros"""
+        miembros = self.obtener_miembros(solo_activos=True)
+        resumen = []
+
+        for miembro in miembros:
+            pago = self.calcular_pago_miembro(miembro['id'])
+            resumen.append({
+                'id': miembro['id'],
+                'nombre': miembro['nombre'],
+                'apellidos': miembro['apellidos'],
+                'instrumento': miembro['instrumento'],
+                'total_actuaciones': pago['total_actuaciones'],
+                'ensayos_no_asistidos': pago['ensayos_no_asistidos'],
+                'penalizacion': pago['penalizacion'],
+                'total_final': pago['total_final']
+            })
+
+        return resumen
+
+    def obtener_estadisticas_miembro(self, miembro_id: int) -> Dict:
+        """Obtiene estadísticas de asistencia de un miembro"""
+        asistencias = self.obtener_asistencias_miembro(miembro_id)
+
+        total_eventos = len(asistencias)
+        total_asistencias = len([a for a in asistencias if a['asistio']])
+
+        total_ensayos = len([a for a in asistencias if a['tipo'] == 'ensayo'])
+        ensayos_asistidos = len([a for a in asistencias if a['tipo'] == 'ensayo' and a['asistio']])
+
+        total_actuaciones = len([a for a in asistencias if a['tipo'] == 'actuacion'])
+        actuaciones_asistidas = len([a for a in asistencias if a['tipo'] == 'actuacion' and a['asistio']])
+
+        porcentaje_general = (total_asistencias / total_eventos * 100) if total_eventos > 0 else 0
+        porcentaje_ensayos = (ensayos_asistidos / total_ensayos * 100) if total_ensayos > 0 else 0
+        porcentaje_actuaciones = (actuaciones_asistidas / total_actuaciones * 100) if total_actuaciones > 0 else 0
+
+        return {
+            'total_eventos': total_eventos,
+            'total_asistencias': total_asistencias,
+            'porcentaje_general': porcentaje_general,
+            'total_ensayos': total_ensayos,
+            'ensayos_asistidos': ensayos_asistidos,
+            'porcentaje_ensayos': porcentaje_ensayos,
+            'total_actuaciones': total_actuaciones,
+            'actuaciones_asistidas': actuaciones_asistidas,
+            'porcentaje_actuaciones': porcentaje_actuaciones
+        }
