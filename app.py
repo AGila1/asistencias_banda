@@ -2,6 +2,7 @@
 Aplicación principal de gestión de asistencias de banda de música
 """
 import streamlit as st
+import os
 from supabase_database import SupabaseDatabase
 from datetime import datetime, date
 import pandas as pd
@@ -20,13 +21,27 @@ st.set_page_config(
 @st.cache_resource
 def get_database():
     try:
-        return SupabaseDatabase(
-            url=st.secrets["supabase"]["url"],
-            key=st.secrets["supabase"]["key"]
-        )
-    except KeyError:
-        st.error("❌ Error: No se encontraron las credenciales de Supabase")
-        st.error("Por favor, configura SUPABASE_URL y SUPABASE_KEY en .streamlit/secrets.toml")
+        # Intentar obtener de secrets de Streamlit
+        if "supabase" in st.secrets:
+            url = st.secrets["supabase"]["url"]
+            key = st.secrets["supabase"]["key"]
+        # Fallback a variables de entorno
+        else:
+            url = os.getenv("SUPABASE_URL")
+            key = os.getenv("SUPABASE_KEY")
+
+        if not url or not key:
+            st.error("❌ Error: No se encontraron las credenciales de Supabase")
+            st.info("Configura en Streamlit Cloud → Settings → Secrets:")
+            st.code("""[supabase]
+url = "https://YOUR_PROJECT_ID.supabase.co"
+key = "YOUR_ANON_PUBLIC_KEY"
+""")
+            st.stop()
+
+        return SupabaseDatabase(url=url, key=key)
+    except Exception as e:
+        st.error(f"❌ Error al conectar con Supabase: {str(e)}")
         st.stop()
 
 db = get_database()
