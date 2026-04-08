@@ -13,10 +13,10 @@ class SupabaseDatabase:
         """Inicializa la conexión con Supabase"""
         self.url = url or os.getenv("SUPABASE_URL")
         self.key = key or os.getenv("SUPABASE_KEY")
-        
+
         if not self.url or not self.key:
             raise ValueError("SUPABASE_URL y SUPABASE_KEY son requeridos")
-        
+
         self.client: Client = create_client(self.url, self.key)
         self.init_db()
 
@@ -46,10 +46,10 @@ class SupabaseDatabase:
     def obtener_miembros(self, solo_activos: bool = True) -> List[Dict]:
         """Obtiene la lista de miembros"""
         query = self.client.table("miembros").select("*")
-        
+
         if solo_activos:
             query = query.eq("activo", True)
-        
+
         result = query.order("nombre").execute()
         return result.data if result.data else []
 
@@ -97,10 +97,10 @@ class SupabaseDatabase:
     def obtener_eventos(self, tipo: Optional[str] = None) -> List[Dict]:
         """Obtiene la lista de eventos"""
         query = self.client.table("eventos").select("*")
-        
+
         if tipo:
             query = query.eq("tipo", tipo)
-        
+
         result = query.order("fecha", desc=True).execute()
         return result.data if result.data else []
 
@@ -135,14 +135,14 @@ class SupabaseDatabase:
         """Registra la asistencia de un miembro a un evento"""
         # Primero intenta actualizar
         existing = self.client.table("asistencias").select("id").eq("miembro_id", miembro_id).eq("evento_id", evento_id).execute()
-        
+
         data = {
             "miembro_id": miembro_id,
             "evento_id": evento_id,
             "asistio": asistio,
             "observaciones": observaciones
         }
-        
+
         if existing.data:
             # Actualizar si existe
             self.client.table("asistencias").update(data).eq("miembro_id", miembro_id).eq("evento_id", evento_id).execute()
@@ -155,7 +155,7 @@ class SupabaseDatabase:
         result = self.client.table("asistencias").select(
             "id, miembro_id, evento_id, asistio, observaciones, miembros(nombre, apellidos, instrumento)"
         ).eq("evento_id", evento_id).order("miembros(nombre)").execute()
-        
+
         # Flatten la estructura de datos
         data = result.data if result.data else []
         flattened = []
@@ -174,7 +174,7 @@ class SupabaseDatabase:
                     'instrumento': item['miembros'].get('instrumento')
                 })
             flattened.append(flat_item)
-        
+
         return flattened
 
     def obtener_asistencias_miembro(self, miembro_id: int) -> List[Dict]:
@@ -182,7 +182,7 @@ class SupabaseDatabase:
         result = self.client.table("asistencias").select(
             "id, miembro_id, evento_id, asistio, observaciones, eventos(tipo, fecha, descripcion, importe)"
         ).eq("miembro_id", miembro_id).order("eventos(fecha)", desc=True).execute()
-        
+
         # Flatten la estructura de datos
         data = result.data if result.data else []
         flattened = []
@@ -202,7 +202,7 @@ class SupabaseDatabase:
                     'importe': item['eventos'].get('importe')
                 })
             flattened.append(flat_item)
-        
+
         return flattened
 
     # ===== CÁLCULOS DE PAGOS =====
@@ -217,34 +217,34 @@ class SupabaseDatabase:
         asistencias = self.client.table("asistencias").select(
             "evento_id, eventos(importe)"
         ).eq("miembro_id", miembro_id).eq("asistio", True).execute()
-        
+
         total_actuaciones = 0.0
-        
+
         for asistencia in asistencias.data:
             evento = asistencia.get('eventos')
             if evento:
                 evento_id = asistencia.get('evento_id')
                 importe = evento.get('importe', 0)
-                
+
                 # Contar cuántos asistieron a esta actuación
                 contador = self.client.table("asistencias").select(
                     "id", count="exact"
                 ).eq("evento_id", evento_id).eq("asistio", True).execute()
-                
+
                 num_asistentes = len(contador.data) if contador.data else 1
                 if num_asistentes > 0:
                     total_actuaciones += importe / num_asistentes
-        
+
         # Contar ensayos NO asistidos
         ensayos_no = self.client.table("asistencias").select(
             "id", count="exact"
         ).eq("miembro_id", miembro_id).eq("asistio", False).execute()
-        
+
         ensayos_no_asistidos = len(ensayos_no.data) if ensayos_no.data else 0
-        
+
         penalizacion = ensayos_no_asistidos * 0.50
         total_final = total_actuaciones - penalizacion
-        
+
         return {
             'total_actuaciones': round(total_actuaciones, 2),
             'ensayos_no_asistidos': ensayos_no_asistidos,
